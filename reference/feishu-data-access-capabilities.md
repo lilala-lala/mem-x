@@ -69,7 +69,7 @@ lark-cli im +messages-resources-download \
 {
   "ok": true,
   "data": {
-    "saved_path": "/Users/lizhichun/code/mem-x/downloads/test.pdf",
+    "saved_path": "~/code/mem-x/downloads/test.pdf",
     "size_bytes": 690667
   }
 }
@@ -105,7 +105,7 @@ lark-cli im +messages-resources-download \
 {
   "ok": true,
   "data": {
-    "saved_path": "/Users/lizhichun/code/mem-x/downloads/image1.jpg",
+    "saved_path": "~/code/mem-x/downloads/image1.jpg",
     "size_bytes": 2339965
   }
 }
@@ -237,7 +237,7 @@ lark-cli docs +media-download \
   "ok": true,
   "data": {
     "content_type": "image/png",
-    "saved_path": "/Users/lizhichun/code/mem-x/downloads/doc_image.png",
+    "saved_path": "~/code/mem-x/downloads/doc_image.png",
     "size_bytes": 324390
   }
 }

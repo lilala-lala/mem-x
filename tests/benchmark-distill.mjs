@@ -13,17 +13,17 @@ await fs.writeFile(
 );
 await fs.writeFile(
   "/tmp/mock-openclaw-sdk/openclaw/plugin-sdk/plugin-entry.js",
-  `export { definePluginEntry } from "/Users/lizhichun/code/openclaw/dist/plugin-sdk/plugin-entry.js";`,
+  `export { definePluginEntry } from "~/code/openclaw/dist/plugin-sdk/plugin-entry.js";`,
   "utf-8"
 );
 await fs.writeFile(
   "/tmp/mock-openclaw-sdk/openclaw/plugin-sdk/agent-runtime.js",
-  `export { resolveDefaultAgentId } from "/Users/lizhichun/code/openclaw/dist/plugin-sdk/agent-runtime.js";`,
+  `export { resolveDefaultAgentId } from "~/code/openclaw/dist/plugin-sdk/agent-runtime.js";`,
   "utf-8"
 );
 
 const testScript = `
-import plugin from "/Users/lizhichun/code/feishu-contest/mem-x/src/index.ts";
+import plugin from "~/code/feishu-contest/mem-x/src/index.ts";
 
 (async () => {
   const registeredCommands = [];
@@ -40,13 +40,13 @@ import plugin from "/Users/lizhichun/code/feishu-contest/mem-x/src/index.ts";
     config: {
       agents: {
         defaults: {
-          workspace: "/Users/lizhichun/.openclaw/workspace",
+          workspace: "~/.openclaw/workspace",
         },
       },
     },
     runtime: {
       agent: {
-        resolveAgentWorkspaceDir: (cfg, agentId) => "/Users/lizhichun/.openclaw/workspace",
+        resolveAgentWorkspaceDir: (cfg, agentId) => "~/.openclaw/workspace",
       },
     },
     registerCommand: (cmd) => {
@@ -86,5 +86,5 @@ const child = spawn("npx", ["tsx", "/tmp/benchmark-run.ts"], {
     LLM_MODEL: "ep-20260423222610-xbx2l",
   },
   stdio: "inherit",
-  cwd: "/Users/lizhichun/code/feishu-contest/mem-x",
+  cwd: "~/code/feishu-contest/mem-x",
 });

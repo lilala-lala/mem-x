@@ -2,7 +2,7 @@
  * Lark CLI wrapper: list chats, fetch messages, download resources.
  * Includes exponential-backoff retry for transient failures.
  */
-import { exec } from "node:child_process";
+import { execFile } from "node:child_process";
 
 export type LarkMessage = {
   message_id: string;
@@ -18,23 +18,44 @@ export type LarkChat = {
   chat_type?: string;
 };
 
-function execPromise(cmd: string, timeoutMs: number): Promise<string> {
+function execFilePromise(
+  file: string,
+  args: string[],
+  timeoutMs: number,
+): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = exec(cmd, { encoding: "utf-8", timeout: timeoutMs }, (err, stdout) => {
-      if (err) reject(err);
-      else resolve(stdout);
-    });
-    // Ensure process is killed if parent aborts
+    const child = execFile(
+      file,
+      args,
+      { encoding: "utf-8", timeout: timeoutMs },
+      (err, stdout, stderr) => {
+        if (err) {
+          if (stderr) {
+            reject(new Error(`${err.message}\nstderr: ${stderr.trim()}`));
+          } else {
+            reject(err);
+          }
+        } else {
+          if (stderr) {
+            console.error(`[lark] stderr: ${stderr.trim()}`);
+          }
+          resolve(stdout);
+        }
+      },
+    );
     child.unref?.();
   });
 }
 
-async function runLark(cmd: string, cliPath: string, maxRetries = 2): Promise<unknown> {
-  const fullCmd = `${cliPath} ${cmd}`;
+async function runLark(
+  args: string[],
+  cliPath: string,
+  maxRetries = 2,
+): Promise<unknown> {
   let lastError: Error | undefined;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const stdout = await execPromise(fullCmd, 30000);
+      const stdout = await execFilePromise(cliPath, args, 30000);
       return JSON.parse(stdout);
     } catch (e) {
       lastError = e as Error;
@@ -49,7 +70,7 @@ async function runLark(cmd: string, cliPath: string, maxRetries = 2): Promise<un
 }
 
 export async function listChats(cliPath: string): Promise<LarkChat[]> {
-  const resp = (await runLark("im chats list", cliPath)) as {
+  const resp = (await runLark(["im", "chats", "list"], cliPath)) as {
     data?: { items?: LarkChat[] };
   };
   return resp.data?.items ?? [];
@@ -62,7 +83,7 @@ export async function listMessages(
   lookbackDays = 7,
 ): Promise<LarkMessage[]> {
   const resp = (await runLark(
-    `im +chat-messages-list --chat-id ${chatId} --page-size ${pageSize}`,
+    ["im", "+chat-messages-list", "--chat-id", chatId, "--page-size", String(pageSize)],
     cliPath,
   )) as { data?: { messages?: LarkMessage[] } };
   const items = (resp.data?.messages ?? []).map((m) => ({

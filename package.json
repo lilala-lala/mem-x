@@ -1,11 +1,22 @@
 {
   "name": "mem-x",
   "version": "0.1.0",
+  "description": "Distills Feishu chat history into OpenClaw memory. Enables Day-1 productive enterprise context.",
   "type": "module",
   "main": "./dist/index.js",
+  "files": [
+    "dist/",
+    "prompts/",
+    "openclaw.plugin.json",
+    "README.md"
+  ],
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsc && cp -r prompts dist/",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.1.0"
   },
   "openclaw": {
     "extensions": [
@@ -21,6 +32,7 @@
     }
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "typescript": "^5.6.0"
   },
   "peerDependencies": {

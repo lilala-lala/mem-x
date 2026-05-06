@@ -93,7 +93,11 @@ export async function writeMemoryFile(
   relativePath: string,
   content: string,
 ): Promise<void> {
-  const abs = path.join(dir, relativePath);
+  const abs = path.resolve(dir, relativePath);
+  const resolvedDir = path.resolve(dir);
+  if (!abs.startsWith(resolvedDir + path.sep) && abs !== resolvedDir) {
+    throw new Error(`Invalid relative path: directory traversal detected: ${relativePath}`);
+  }
   await fs.mkdir(path.dirname(abs), { recursive: true });
   await fs.writeFile(abs, content, "utf-8");
 }

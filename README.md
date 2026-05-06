@@ -18,32 +18,43 @@
 
 ### 1. 安装到 OpenClaw
 
-```bash
-# 方式 A：复制到 OpenClaw extensions 目录
-cp -r /path/to/mem-x /path/to/openclaw/extensions/
+**方式 A：作为 bundled plugin（开发/源码集成）**
 
-# 方式 B：pnpm link（开发时）
-cd /path/to/mem-x
-pnpm link
+将项目复制到 OpenClaw 源码树的 `extensions/` 目录下（**不要**使用符号链接，OpenClaw 的 build 系统会跳过符号链接）：
+
+```bash
+cp -r /path/to/mem-x /path/to/openclaw/extensions/
 cd /path/to/openclaw
-pnpm link mem-x
+pnpm build
+```
+
+build 完成后，OpenClaw 的 bundled plugin discovery 会自动找到 mem-x。
+
+**方式 B：作为独立包安装**
+
+```bash
+openclaw plugins install /path/to/mem-x
 ```
 
 ### 2. 配置
 
-在 OpenClaw 配置中启用插件：
+在 OpenClaw 配置中启用插件（`~/.openclaw/openclaw.json`）：
 
 ```json
 {
   "plugins": {
-    "mem-x": {
-      "enabled": true,
-      "llmApiKey": "sk-...",
-      "llmBaseUrl": "https://api.deepseek.com/anthropic",
-      "llmModel": "deepseek-v4-pro[1m]",
-      "memoryDir": "memory/feishu",
-      "maxMessagesPerDistill": 200,
-      "lookbackDays": 7
+    "entries": {
+      "mem-x": {
+        "enabled": true,
+        "config": {
+          "llmApiKey": "sk-...",
+          "llmBaseUrl": "https://api.deepseek.com/anthropic",
+          "llmModel": "deepseek-v4-pro[1m]",
+          "memoryDir": "memory/feishu",
+          "maxMessagesPerDistill": 200,
+          "lookbackDays": 7
+        }
+      }
     }
   }
 }

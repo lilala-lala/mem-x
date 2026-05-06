@@ -11,39 +11,39 @@ const PLUGIN_ID = "mem-x";
 
 // Simple file-based prompt loading (no bundler needed for skill md)
 // Tries v2 first, falls back to v1, then built-in minimal prompt.
-async function loadDistillPrompt(workspaceDir: string): Promise<string> {
-  // 1. Try plugin's own prompts directory first (works when installed in OpenClaw extensions)
+async function loadDistillPrompt(): Promise<string> {
   const pluginDir = path.dirname(fileURLToPath(import.meta.url));
-  const pluginV2Path = path.join(pluginDir, "prompts", "distill_v2.skill.md");
-  try {
-    return await fs.readFile(pluginV2Path, "utf-8");
-  } catch {
-    // fallback
-  }
-  const pluginV1Path = path.join(pluginDir, "prompts", "distill_v1.skill.md");
-  try {
-    return await fs.readFile(pluginV1Path, "utf-8");
-  } catch {
-    // fallback to workspace-relative (dev monorepo layout)
+
+  // Search paths: pluginDir may be src/ (dev) or dist/ (compiled)
+  const pluginName =
+    path.basename(pluginDir) === "src"
+      ? path.basename(path.resolve(pluginDir, ".."))
+      : path.basename(pluginDir);
+  const searchDirs = [
+    path.join(pluginDir, "prompts"),       // src/prompts or dist/prompts
+    path.join(pluginDir, "..", "prompts"), // project-root/prompts
+    path.join(pluginDir, "..", "..", "prompts"), // monorepo fallback
+    path.join(pluginDir, "..", "..", "..", "extensions", pluginName, "prompts"), // bundled build fallback
+  ];
+
+  for (const dir of searchDirs) {
+    try {
+      return await fs.readFile(path.join(dir, "distill_v2.skill.md"), "utf-8");
+    } catch {
+      // try v1 in same dir
+    }
+    try {
+      return await fs.readFile(path.join(dir, "distill_v1.skill.md"), "utf-8");
+    } catch {
+      // next dir
+    }
   }
 
-  // 2. Fallback to project-level prompts directory (one level above src/)
-  const projectV2Path = path.join(pluginDir, "..", "..", "prompts", "distill_v2.skill.md");
-  try {
-    return await fs.readFile(projectV2Path, "utf-8");
-  } catch {
-    // fallback to v1
-  }
-  const projectV1Path = path.join(pluginDir, "..", "..", "prompts", "distill_v1.skill.md");
-  try {
-    return await fs.readFile(projectV1Path, "utf-8");
-  } catch {
-    // Fallback minimal prompt if project files not present
-    return `You are a Feishu context distiller. Extract tasks, decisions, preferences, relationships, and lessons from the JSON below. Output markdown files with frontmatter.
+  // Fallback minimal prompt if no files found
+  return `You are a Feishu context distiller. Extract tasks, decisions, preferences, relationships, and lessons from the JSON below. Output markdown files with frontmatter.
 
 Input: {{INPUT_JSON}}
 `;
-  }
 }
 
 function parseDistillOutput(raw: string): { path: string; content: string }[] {
@@ -91,7 +91,7 @@ function normalizeMemoryOutput(
     const fmText = serializeFrontmatter(frontmatter);
     const bodyIdx = content.indexOf("\n#");
     const body = bodyIdx >= 0 ? content.slice(bodyIdx + 1) : "";
-    content = `${fmText}\n${body}`;
+    content = `---\n${fmText}\n---\n${body}`;
   }
 
   return { path: file.path, content };
@@ -204,7 +204,7 @@ export default definePluginEntry({
         }
 
         // 2. Load prompt template
-        const promptTemplate = await loadDistillPrompt(memDir);
+        const promptTemplate = await loadDistillPrompt();
 
         let totalMessages = 0;
         let totalFiles = 0;
@@ -399,30 +399,35 @@ export default definePluginEntry({
     api.on("before_prompt_build", async () => {
       if (!enabled) return undefined;
 
-      const memDir = resolveMemoryDir();
-      const entries = await readMemoryDir(memDir).catch(() => []);
-      const active = entries
-        .filter((e) => e.frontmatter.status === "active")
-        .sort((a, b) => Number(b.frontmatter.importance ?? 0) - Number(a.frontmatter.importance ?? 0))
-        .slice(0, 20); // Inject top 20 most important
+      try {
+        const memDir = resolveMemoryDir();
+        const entries = await readMemoryDir(memDir).catch(() => []);
+        const active = entries
+          .filter((e) => e.frontmatter.status === "active")
+          .sort((a, b) => Number(b.frontmatter.importance ?? 0) - Number(a.frontmatter.importance ?? 0))
+          .slice(0, 20); // Inject top 20 most important
 
-      if (active.length === 0) return undefined;
+        if (active.length === 0) return undefined;
 
-      const contextLines = [
-        "",
-        "### Enterprise Context (from Feishu)",
-        "",
-        ...active.map((e) => {
-          const title = e.body.split("\n")[0]?.replace(/^#\s*/, "") ?? e.id;
-          return `- ${e.type.toUpperCase()}: ${title} (importance: ${e.frontmatter.importance ?? "?"})`;
-        }),
-        "",
-      ];
+        const contextLines = [
+          "",
+          "### Enterprise Context (from Feishu)",
+          "",
+          ...active.map((e) => {
+            const title = e.body.split("\n")[0]?.replace(/^#\s*/, "") ?? e.id;
+            return `- ${e.type.toUpperCase()}: ${title} (importance: ${e.frontmatter.importance ?? "?"})`;
+          }),
+          "",
+        ];
 
-      // Append to system prompt via cacheable appendSystemContext
-      return {
-        appendSystemContext: contextLines.join("\n"),
-      };
+        // Append to system prompt via cacheable appendSystemContext
+        return {
+          appendSystemContext: contextLines.join("\n"),
+        };
+      } catch (e) {
+        console.error("[mem-x] before_prompt_build hook failed:", e);
+        return undefined;
+      }
     });
   },
 });

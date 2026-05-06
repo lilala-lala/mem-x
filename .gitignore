@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# TypeScript build output
+dist/
+
+# Test-generated artifacts
+tests/_demo_memory/
+tests/_test_*/
+
+# macOS
+.DS_Store
+
+# Local environment
+.env
+.env.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+reference/lark-skills/

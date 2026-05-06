@@ -1,0 +1,97 @@
+{
+  "_comment": "模拟一周 Omega 项目群聊数据，故事线设计为同时覆盖：决策/承诺/教训/偏好/关系五类记忆，含矛盾更新场景与抗干扰噪声。结构仿 lark-cli `im +chat-messages-list` 返回",
+  "chat_id": "oc_omega_team_2026",
+  "chat_name": "Omega 数据看板项目组",
+  "members": [
+    { "name": "林老板", "open_id": "ou_pm_lin", "role": "PM" },
+    { "name": "阿亮", "open_id": "ou_yl_alex", "role": "前端 lead" },
+    { "name": "小陈", "open_id": "ou_chen_xb", "role": "后端" },
+    { "name": "小王", "open_id": "ou_wang_qa", "role": "QA" },
+    { "name": "我", "open_id": "ou_me_lzc", "role": "全栈/host_user" }
+  ],
+  "host_user": "ou_me_lzc",
+  "messages": [
+    { "message_id": "om_001", "sender": "ou_pm_lin", "create_time": "2026-04-21T10:02:00+08:00", "msg_type": "text", "content": "@all 早，周会开始。本周目标：完成 cache 层 + 数据看板 v1 上线。今天先把缓存方案定了。" },
+    { "message_id": "om_002", "sender": "ou_yl_alex", "create_time": "2026-04-21T10:03:00+08:00", "msg_type": "text", "content": "我倾向 Memcached，benchmark 上 read latency 比 Redis 低 30%。" },
+    { "message_id": "om_003", "sender": "ou_chen_xb", "create_time": "2026-04-21T10:04:30+08:00", "msg_type": "text", "content": "Redis 吧，团队已经有运维经验，且我们后面需要持久化能力。Memcached 上线还得搭一套监控。" },
+    { "message_id": "om_004", "sender": "ou_yl_alex", "create_time": "2026-04-21T10:05:10+08:00", "msg_type": "text", "content": "持久化我们用得上吗？看板数据本来就能从主库重建。" },
+    { "message_id": "om_005", "sender": "ou_pm_lin", "create_time": "2026-04-21T10:06:00+08:00", "msg_type": "text", "content": "先搁置，我中午想想。@小陈 你下午把两边的数据再整理一下" },
+    { "message_id": "om_006", "sender": "ou_chen_xb", "create_time": "2026-04-21T10:06:20+08:00", "msg_type": "text", "content": "好的，下午前给。" },
+    { "message_id": "om_007", "sender": "ou_pm_lin", "create_time": "2026-04-21T10:07:00+08:00", "msg_type": "text", "content": "另外周报规则定一下：每周五下午 5 点前在群里发，标题统一格式：周报-Omega-Wxx。这是硬规定。" },
+    { "message_id": "om_008", "sender": "ou_wang_qa", "create_time": "2026-04-21T10:08:00+08:00", "msg_type": "text", "content": "👌" },
+    { "message_id": "om_009", "sender": "ou_me_lzc", "create_time": "2026-04-21T10:08:20+08:00", "msg_type": "text", "content": "收到。" },
+    { "message_id": "om_010", "sender": "ou_yl_alex", "create_time": "2026-04-21T12:30:00+08:00", "msg_type": "text", "content": "中午吃啥 大家" },
+    { "message_id": "om_011", "sender": "ou_chen_xb", "create_time": "2026-04-21T12:31:00+08:00", "msg_type": "text", "content": "黄焖鸡？" },
+    { "message_id": "om_012", "sender": "ou_wang_qa", "create_time": "2026-04-21T12:31:30+08:00", "msg_type": "text", "content": "[Sticker]" },
+
+    { "message_id": "om_013", "sender": "ou_pm_lin", "create_time": "2026-04-22T09:50:00+08:00", "msg_type": "text", "content": "@all 缓存方案就用 Redis 了。理由：① 团队已有运维经验，② 后面我们要做用户登录态的持久化，迟早要 Redis。Memcached 性能优势的场景我们这版用不到。" },
+    { "message_id": "om_014", "sender": "ou_yl_alex", "create_time": "2026-04-22T09:51:00+08:00", "msg_type": "text", "content": "OK，我保留意见但服从决定。👍" },
+    { "message_id": "om_015", "sender": "ou_chen_xb", "create_time": "2026-04-22T09:52:00+08:00", "msg_type": "text", "content": "好的，我开始集成。这周五前给到测试环境。" },
+    { "message_id": "om_016", "sender": "ou_wang_qa", "create_time": "2026-04-22T14:20:00+08:00", "msg_type": "text", "content": "提醒一下后端同学：测试环境的 dt 字段存的是上海时间不是 UTC，之前 Q1 那次就因为这个查错过一周数据。建议 query 时显式 +8:00。" },
+    { "message_id": "om_017", "sender": "ou_chen_xb", "create_time": "2026-04-22T14:22:00+08:00", "msg_type": "text", "content": "了解。我集成时注意。" },
+    { "message_id": "om_018", "sender": "ou_yl_alex", "create_time": "2026-04-22T16:00:00+08:00", "msg_type": "text", "content": "前端这次 brand 主色用 #1664FF，按 design 给的稿，不要再调。" },
+    { "message_id": "om_019", "sender": "ou_me_lzc", "create_time": "2026-04-22T16:02:00+08:00", "msg_type": "text", "content": "收到。" },
+
+    { "message_id": "om_020", "sender": "ou_pm_lin", "create_time": "2026-04-23T09:30:00+08:00", "msg_type": "text", "content": "刚刚收到客户群消息，转发一下：客户 X 反馈说默认进来希望看上周数据，不是当天的。这个需求我们消化一下。" },
+    { "message_id": "om_021", "sender": "ou_yl_alex", "create_time": "2026-04-23T09:32:00+08:00", "msg_type": "text", "content": "默认时间窗这个改起来工作量不大，但要确认是不是所有客户都这预期。" },
+    { "message_id": "om_022", "sender": "ou_chen_xb", "create_time": "2026-04-23T09:33:00+08:00", "msg_type": "text", "content": "我先记下。" },
+    { "message_id": "om_023", "sender": "ou_pm_lin", "create_time": "2026-04-23T11:00:00+08:00", "msg_type": "text", "content": "@我 PRD 周四前给我一版，按上次那种风格——开头先放 user story，技术细节放最后，中间穿插 mock 图。不要堆功能列表。" },
+    { "message_id": "om_024", "sender": "ou_me_lzc", "create_time": "2026-04-23T11:02:00+08:00", "msg_type": "text", "content": "好。" },
+    { "message_id": "om_025", "sender": "ou_chen_xb", "create_time": "2026-04-23T15:40:00+08:00", "msg_type": "text", "content": "求救！Redis 测试环境 OOM 了，看板查询全失败" },
+    { "message_id": "om_026", "sender": "ou_yl_alex", "create_time": "2026-04-23T15:42:00+08:00", "msg_type": "text", "content": "key TTL 设了吗？" },
+    { "message_id": "om_027", "sender": "ou_chen_xb", "create_time": "2026-04-23T15:43:00+08:00", "msg_type": "text", "content": "...没设" },
+    { "message_id": "om_028", "sender": "ou_yl_alex", "create_time": "2026-04-23T15:44:00+08:00", "msg_type": "text", "content": "记住：所有缓存 key 必须设 TTL，没特殊原因默认 1h。这个坑我去年踩过，写到 wiki 了。" },
+    { "message_id": "om_029", "sender": "ou_chen_xb", "create_time": "2026-04-23T15:45:00+08:00", "msg_type": "text", "content": "好的，回头同步给团队。" },
+
+    { "message_id": "om_030", "sender": "ou_pm_lin", "create_time": "2026-04-24T09:15:00+08:00", "msg_type": "text", "content": "@all 重要变更：本周周报提前到周日下午前发，因为周一一早老板那边要听 Q2 项目汇报，我得提前看。麻烦各位。" },
+    { "message_id": "om_031", "sender": "ou_yl_alex", "create_time": "2026-04-24T09:16:00+08:00", "msg_type": "text", "content": "收到。" },
+    { "message_id": "om_032", "sender": "ou_me_lzc", "create_time": "2026-04-24T09:17:00+08:00", "msg_type": "text", "content": "好的。" },
+    { "message_id": "om_033", "sender": "ou_chen_xb", "create_time": "2026-04-24T09:18:00+08:00", "msg_type": "text", "content": "👌" },
+    { "message_id": "om_034", "sender": "ou_wang_qa", "create_time": "2026-04-24T11:00:00+08:00", "msg_type": "text", "content": "测试反馈：Q1 旧数据查询非常慢，10 秒以上，需要加索引。建议 (project_id, dt) 上加复合索引。" },
+    { "message_id": "om_035", "sender": "ou_yl_alex", "create_time": "2026-04-24T11:05:00+08:00", "msg_type": "text", "content": "我接，下周二前能搞定。" },
+    { "message_id": "om_036", "sender": "ou_pm_lin", "create_time": "2026-04-24T14:30:00+08:00", "msg_type": "text", "content": "另外讨论一下缓存策略：query 级缓存还是 result 级？@阿亮 @小陈" },
+    { "message_id": "om_037", "sender": "ou_chen_xb", "create_time": "2026-04-24T14:35:00+08:00", "msg_type": "text", "content": "我倾向 query 级，命中率高。" },
+    { "message_id": "om_038", "sender": "ou_yl_alex", "create_time": "2026-04-24T14:37:00+08:00", "msg_type": "text", "content": "我的 vote 也是 query 级。" },
+    { "message_id": "om_039", "sender": "ou_pm_lin", "create_time": "2026-04-24T14:40:00+08:00", "msg_type": "text", "content": "OK，定 query 级。" },
+    { "message_id": "om_040", "sender": "ou_chen_xb", "create_time": "2026-04-24T18:00:00+08:00", "msg_type": "text", "content": "[Sticker] 下班" },
+
+    { "message_id": "om_041", "sender": "ou_chen_xb", "create_time": "2026-04-25T11:00:00+08:00", "msg_type": "text", "content": "Redis 集成完成，PR #123 已经发，麻烦大家 review。测试环境跑通了。" },
+    { "message_id": "om_042", "sender": "ou_yl_alex", "create_time": "2026-04-25T11:30:00+08:00", "msg_type": "text", "content": "review 中" },
+    { "message_id": "om_043", "sender": "ou_pm_lin", "create_time": "2026-04-25T14:00:00+08:00", "msg_type": "text", "content": "周末加班的人吗？没事，我自己来。👀" },
+    { "message_id": "om_044", "sender": "ou_pm_lin", "create_time": "2026-04-25T16:50:00+08:00", "msg_type": "text", "content": "@我 哎客户 X 那个上周数据默认的事，到底怎么处理啊，我看群里没结论。" },
+    { "message_id": "om_045", "sender": "ou_me_lzc", "create_time": "2026-04-25T16:52:00+08:00", "msg_type": "text", "content": "我看一下，下午回。" },
+    { "message_id": "om_046", "sender": "ou_yl_alex", "create_time": "2026-04-25T17:00:00+08:00", "msg_type": "text", "content": "顺便说一下，Memcached 那个事我服气了，Redis 跑测试环境表现很稳。" },
+    { "message_id": "om_047", "sender": "ou_wang_qa", "create_time": "2026-04-25T17:30:00+08:00", "msg_type": "text", "content": "[Sticker]" },
+    { "message_id": "om_048", "sender": "ou_pm_lin", "create_time": "2026-04-25T18:00:00+08:00", "msg_type": "text", "content": "提醒：周报周日下午前发，别忘了。" }
+  ],
+  "_test_oracles": {
+    "decisions_expected": [
+      { "topic": "缓存方案", "chosen": "Redis", "rejected": "Memcached", "reasons": ["团队已有 Redis 运维经验", "未来需要持久化用户登录态"], "rejected_reasons": ["Memcached read latency 低 30%"], "decided_by": "ou_pm_lin", "decided_at": "2026-04-22T09:50:00+08:00" },
+      { "topic": "缓存粒度", "chosen": "query 级", "decided_at": "2026-04-24T14:40:00+08:00" }
+    ],
+    "commitments_expected": [
+      { "owner": "ou_chen_xb", "what": "Redis 集成给到测试环境", "due": "2026-04-25", "fulfilled": true, "fulfilled_at": "om_041" },
+      { "owner": "ou_me_lzc", "what": "PRD v1", "due": "2026-04-24", "style_constraint": "user story 开头/技术细节放最后/穿插 mock 图/不堆功能列表" },
+      { "owner": "ou_yl_alex", "what": "Q1 索引优化", "due": "2026-04-29" },
+      { "owner": "ou_me_lzc", "what": "客户 X 上周数据默认需求确认", "due": null, "remind_required": true, "comment": "om_020 注入但无人正式认领，om_044 时被林老板重新发现" }
+    ],
+    "conflicts_expected": [
+      { "type": "deadline_change", "subject": "周报 deadline", "v1": { "value": "周五下午 5 点", "src_msg": "om_007", "at": "2026-04-21T10:07:00+08:00" }, "v2": { "value": "周日下午前", "src_msg": "om_030", "at": "2026-04-24T09:15:00+08:00" }, "must_supersede": true }
+    ],
+    "lessons_expected": [
+      { "lesson": "测试环境 dt 字段是上海时间，需 +8:00 显式 query", "src": "om_016" },
+      { "lesson": "Redis 缓存 key 必须设 TTL，默认 1h", "src": "om_028", "category": "tribal_knowledge" }
+    ],
+    "preferences_expected": [
+      { "subject": "PM 林老板的 PRD 风格", "preference": "user story 开头/技术细节放最后/穿插 mock 图/不堆功能列表", "src": "om_023" },
+      { "subject": "团队周报格式", "preference": "标题:周报-Omega-Wxx", "src": "om_007" },
+      { "subject": "前端品牌主色", "preference": "#1664FF", "src": "om_018" }
+    ],
+    "relationships_expected": [
+      { "between": ["ou_yl_alex", "ou_chen_xb"], "pattern": "在缓存方案选型上有技术分歧，但服从最终决定", "evidence": ["om_002", "om_003", "om_014", "om_046"] },
+      { "between": ["ou_me_lzc", "ou_pm_lin"], "pattern": "PM 倾向于直接给我下达 PRD/文档类任务，且对风格有明确要求" }
+    ],
+    "noise_should_filter": ["om_010", "om_011", "om_012", "om_040", "om_043", "om_047"],
+    "antiinterference_target": "客户 X 反馈在 om_020 出现，被埋藏 24 条消息，到 om_044 被重新提起 → 系统应能在被问'还有什么悬而未决'时召回"
+  }
+}

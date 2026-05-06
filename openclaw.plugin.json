@@ -1,0 +1,46 @@
+{
+  "id": "mem-x",
+  "name": "Mem-X",
+  "description": "Distills Feishu chat history into OpenClaw memory. Enables Day-1 productive enterprise context.",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true
+      },
+      "larkCliPath": {
+        "type": "string",
+        "default": "lark-cli"
+      },
+      "memoryDir": {
+        "type": "string",
+        "default": "memory/feishu"
+      },
+      "maxMessagesPerDistill": {
+        "type": "integer",
+        "default": 200,
+        "minimum": 10,
+        "maximum": 1000
+      },
+      "lookbackDays": {
+        "type": "integer",
+        "default": 7,
+        "minimum": 1,
+        "maximum": 30
+      },
+      "llmBaseUrl": {
+        "type": "string",
+        "default": "https://api.deepseek.com/anthropic"
+      },
+      "llmApiKey": {
+        "type": "string"
+      },
+      "llmModel": {
+        "type": "string",
+        "default": "deepseek-v4-pro[1m]"
+      }
+    }
+  }
+}

@@ -22,3 +22,4 @@ tests/_test_*/
 *.swo
 
 reference/lark-skills/
+slide/

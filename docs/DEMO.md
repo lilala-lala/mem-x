@@ -13,11 +13,18 @@
 ```json
 {
   "plugins": {
-    "mem-x": {
-      "enabled": true,
-      "llmApiKey": "sk-...",
-      "llmBaseUrl": "https://api.deepseek.com/anthropic",
-      "llmModel": "deepseek-v4-pro[1m]"
+    "entries": {
+      "mem-x": {
+        "enabled": true,
+        "config": {
+          "llmApiKey": "sk-...",
+          "llmBaseUrl": "https://api.deepseek.com/anthropic",
+          "llmModel": "deepseek-v4-pro[1m]",
+          "memoryDir": "memory/feishu",
+          "maxMessagesPerDistill": 200,
+          "lookbackDays": 7
+        }
+      }
     }
   }
 }
@@ -36,7 +43,7 @@
 ```
 
 **预期输出**：
-  
+
 ```
 🔄 Feishu Distillation Started
 Memory dir: /Users/.../memory/feishu
@@ -54,6 +61,7 @@ Index: /Users/.../memory/feishu/INDEX.md
 ```
 
 **解说要点**：
+
 - "这是第一次运行，OpenClaw 之前完全不知道飞书上的任何信息。"
 - "通过 lark-cli 直接读取本地已登录的飞书数据，无需额外授权。"
 - "LLM 自动萃取成结构化记忆文件，带五维标签和证据链。"
@@ -90,6 +98,7 @@ Run /feishu-distill to refresh.
 ```
 
 **解说要点**：
+
 - "所有记忆按 importance 排序，status 区分 active/superseded/archived。"
 - " INDEX.md 自动维护，方便人工审阅。"
 
@@ -122,6 +131,7 @@ Run /feishu-distill to refresh.
 ```
 
 **解说要点**：
+
 - "OpenClaw 原本不知道'复赛截止时间'，因为这不是通用知识。"
 - "通过 before_prompt_build hook，飞书记忆被自动注入系统提示。"
 - "用户无需手动复制粘贴，AI 在'无感知'状态下获得企业上下文。"
@@ -139,6 +149,7 @@ Run /feishu-distill to refresh.
 **预期输出**：展示从 48 条消息（含噪声）中提取的 13 条结构化记忆。
 
 **重点展示**：
+
 1. **客户 X 需求**被从 24 条无关消息中捕获
 2. **周报 deadline 变更**（周五 → 周日）正确归档旧版本
 3. **技术分歧**（Alex vs 小陈）记录为 relationship，而非任务
@@ -162,6 +173,7 @@ subject: 1st
 ```
 
 **解说要点**：
+
 - "subject: 1st 表示这是'我'的记忆，不是'团队共享文档'。"
 - "OpenClaw 是以个人助手的身份理解这段关系，而非企业知识库。"
 
@@ -199,6 +211,7 @@ feedback_log:
 ```
 
 **解说要点**：
+
 - "这就是 Day-N Trustworthy 的核心：用户发现记忆有误，可以直接反馈，系统自动调整 confidence 和 status。"
 - "feedback_log 形成审计链，让 AI 的错误可追溯、可纠正。"
 - "correct / outdated / noise / important 四种动作覆盖常见反馈场景。"
@@ -207,11 +220,11 @@ feedback_log:
 
 ## 评委关注点对应表
 
-| 评分维度 | 演示中体现的点 |
-|---|---|
-| **完整性与价值** | lark-cli → LLM 蒸馏 → markdown 存储 → hook 注入 → 问答验证，完整闭环 |
-| **创新性** | 五维标签体系、Prompt-as-Business-Logic、第一人称记忆、证据链 |
-| **技术实现性** | OpenClaw 原生插件、TypeScript 类型安全、monorepo 集成、SQLite-less 轻量架构 |
+| 评分维度         | 演示中体现的点                                                              |
+| ---------------- | --------------------------------------------------------------------------- |
+| **完整性与价值** | lark-cli → LLM 蒸馏 → markdown 存储 → hook 注入 → 问答验证，完整闭环        |
+| **创新性**       | 五维标签体系、Prompt-as-Business-Logic、第一人称记忆、证据链                |
+| **技术实现性**   | OpenClaw 原生插件、TypeScript 类型安全、monorepo 集成、SQLite-less 轻量架构 |
 
 ---
 
@@ -225,6 +238,7 @@ node demo-offline.mjs
 ```
 
 自动加载预生成的 15 条结构化记忆，完整展示：
+
 - `/feishu-status` 状态概览
 - `before_prompt_build` hook 上下文注入
 - `/feishu-feedback` 反馈闭环
